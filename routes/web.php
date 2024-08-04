@@ -10,6 +10,7 @@ Route::get('/auth/{provider}/redirect', [OAuthController::class, 'redirect'])->n
 Route::get('/auth/{provider}/callback', [OAuthController::class, 'callback'])->name('oauth.callback');
 
 Route::get('/rejected', [SessionController::class, 'rejected'])->name('rejected');
+Route::get('/rejected', [SessionController::class, 'rejected'])->name('login'); // alias
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [ComicController::class, 'index'])->name('home');
