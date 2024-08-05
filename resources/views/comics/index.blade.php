@@ -7,6 +7,8 @@
         <thead>
         <tr>
             <th>書籍名</th>
+            <th>店舗</th>
+            <th>棚情報</th>
             <th>URL</th>
         </tr>
         </thead>
@@ -18,6 +20,8 @@
             @endphp
             <tr>
                 <td>{{ $comic->title }}</td>
+                <td>{{ $comic->shop->name }}</td>
+                <td>{{ $comic->shelf_info  }}</td>
                 <td>
                     <a href="{{$url}}">
                         {{$url}}
