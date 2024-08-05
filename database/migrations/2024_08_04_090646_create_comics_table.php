@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('comics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
             $table->foreignId('shop_id');
             $table->string('id_in_platform');
             $table->string('title');
@@ -21,7 +20,7 @@ return new class extends Migration
             $table->string('isbn')->nullable();
             $table->timestamps();
 
-            $table->unique(['user_id', 'shop_id', 'id_in_platform']);
+            $table->unique(['shop_id', 'id_in_platform']);
         });
     }
 

@@ -37,7 +37,10 @@ class OAuthController extends Controller
             }
         }
 
-        Auth::login($socialProfile->user);
+        $user = $socialProfile->user;
+        Auth::login($user);
+        $user->setRememberToken(\Str::random(60));
+        $user->save();
         return redirect()->route('home');
     }
 }

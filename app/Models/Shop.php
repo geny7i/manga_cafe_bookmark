@@ -14,4 +14,11 @@ use Illuminate\Database\Eloquent\Model;
 class Shop extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'platform_id',
+        'id_in_platform',
+        'name'
+    ];
 }

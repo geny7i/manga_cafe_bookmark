@@ -14,9 +14,10 @@ class ComicController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $comics = Comic::with('shop')->where(['user_id' => $user->id]);
-//        dd($comics->toSql(), $comics->getBindings());
-        return view('comics.index', ['comics' => $comics->get()]);
+        $comics = Comic::whereHas('shop', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->with('shop')->get();
+        return view('comics.index', ['comics' => $comics]);
     }
 
 //    TODO
