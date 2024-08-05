@@ -15,8 +15,12 @@ class ExtComicController extends Controller
 {
     public function create(Request $request):JsonResponse
     {
-        Log::info("test");
-        Log::info(Auth::user());
+        if(!Auth::id()) {
+            return response()->json([
+                'result' => 'error',
+                'message' => 'unauthorized'
+            ], 401);
+        }
         try {
             $data = $request->validate(
                 [
@@ -30,7 +34,7 @@ class ExtComicController extends Controller
 
             $shop = Shop::firstOrCreate(
                 [
-                    'user_id' => 1, // TODO:決め打ち
+                    'user_id' => Auth::id(),
                     'platform_id' => 1, // TODO:決め打ち
                     'id_in_platform' => $data['shopId']
                 ],
