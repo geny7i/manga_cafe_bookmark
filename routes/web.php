@@ -8,8 +8,10 @@ use App\Http\Controllers\ShopController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/api/ext_comic', [ExtComicController::class, 'create'])
-    ->withoutMiddleware(ValidateCsrfToken::class);
+Route::withoutMiddleware(ValidateCsrfToken::class)->group(function () {
+    Route::get('/api/ext_comic/bulk_match', [ExtComicController::class, 'bulk_match']);
+    Route::post('/api/ext_comic', [ExtComicController::class, 'create']);
+});
 
 Route::get('/auth/{provider}/redirect', [OAuthController::class, 'redirect'])->name('oauth.redirect');
 Route::get('/auth/{provider}/callback', [OAuthController::class, 'callback'])->name('oauth.callback');

@@ -13,6 +13,41 @@ use Illuminate\Validation\ValidationException;
 
 class ExtComicController extends Controller
 {
+    public function bulk_match(Request $request):JsonResponse
+    {
+        if(!Auth::id()) {
+            return response()->json([
+                'result' => 'error',
+                'message' => 'unauthorized',
+                'data' => []
+            ], 401);
+        }
+        try {
+            $params = $request->validate(
+                [
+                    'isbn_list' => 'required|string',
+                    'shopId' => 'required|string',
+                ]
+            );
+        } catch (ValidationException $_) {
+            return response()->json([
+                'result' => 'error',
+                'message' => 'invalid_data',
+                'data' => []
+            ], 422);
+        }
+        $shop_id = $params['shopId'];
+        $isbn_list = explode(',', $params['isbn_list']);
+        $exist_isbn_list = Auth::user()->comics()->whereIn('isbn', $isbn_list)
+            ->whereHas('shop', function ($query) use ($shop_id) {
+                $query->where([['id_in_platform', $shop_id]]);
+            })->pluck('isbn')->toArray();
+        return response()->json([
+            'result' => 'success',
+            'message' => 'success',
+            'data' => $exist_isbn_list
+        ]);
+    }
     public function create(Request $request):JsonResponse
     {
         if(!Auth::id()) {
@@ -43,8 +78,9 @@ class ExtComicController extends Controller
                 ]
             );
 
-            $comic = Comic::firstOrCreate(
+            Comic::firstOrCreate(
                 [
+                    'user_id' => Auth::id(),
                     'id_in_platform' => $data['isbn'],
                     'shop_id' => $shop->id,
                 ],
@@ -67,10 +103,9 @@ class ExtComicController extends Controller
                 'message' => 'server_error'
             ], 500);
         }
-        $uid = Auth::id();
         return response()->json([
             'result' => 'success',
-            'message' => "create_success"
+            'message' => "success"
         ]);
     }
 }
