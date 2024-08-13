@@ -58,18 +58,19 @@ class ExtComicController extends Controller
         } catch (ValidationException $_) {
             return response()->json([
                 'result' => 'error',
-                'message' => 'invalid data'
+                'message' => 'invalid_data'
             ], 422);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json([
                 'result' => 'error',
-                'message' => 'server error'
+                'message' => 'server_error'
             ], 500);
         }
+        $uid = Auth::id();
         return response()->json([
             'result' => 'success',
-            'message' => 'create success'
+            'message' => "create_success"
         ]);
     }
 }
