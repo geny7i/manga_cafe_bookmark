@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Shop;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,6 +20,7 @@ class ComicFactory extends Factory
     {
         $isbn = $this->faker->isbn10();
         return [
+            'user_id' => User::factory(),
             'shop_id' => Shop::factory(),
             'id_in_platform' => $isbn,
             'title' => $this->faker->sentence(4),

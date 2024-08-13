@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('comics', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->index();
             $table->foreignId('shop_id');
             $table->string('id_in_platform');
             $table->string('title');
