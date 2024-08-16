@@ -26,7 +26,7 @@ class ExtComicController extends Controller
             $params = $request->validate(
                 [
                     'isbn_list' => 'required|string',
-                    'shopId' => 'required|string',
+                    'shop_id' => 'required|string',
                 ]
             );
         } catch (ValidationException $_) {
@@ -36,7 +36,7 @@ class ExtComicController extends Controller
                 'data' => []
             ], 422);
         }
-        $shop_id = $params['shopId'];
+        $shop_id = $params['shop_id'];
         $isbn_list = explode(',', $params['isbn_list']);
         $exist_isbn_list = Auth::user()->comics()->whereIn('isbn', $isbn_list)
             ->whereHas('shop', function ($query) use ($shop_id) {
