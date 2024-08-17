@@ -21,6 +21,9 @@
                         <button type="submit">ログアウト</button>
                     </form>
                 </li>
+                <li>
+                    <a href="{{ route('api_keys.index') }}">APIキー設定</a>
+                </li>
             @else
                 <li><a href="{{ route('oauth.redirect', 'google') }}">ログイン/登録</a></li>
             @endauth

@@ -7,7 +7,6 @@ use App\Models\Comic;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
@@ -15,13 +14,8 @@ class ExtComicController extends Controller
 {
     public function bulk_match(Request $request):JsonResponse
     {
-        if(!Auth::id()) {
-            return response()->json([
-                'result' => 'error',
-                'message' => 'unauthorized',
-                'data' => []
-            ], 401);
-        }
+        $user = $request->user();
+
         try {
             $params = $request->validate(
                 [
@@ -38,7 +32,7 @@ class ExtComicController extends Controller
         }
         $shop_id = $params['shop_id'];
         $isbn_list = explode(',', $params['isbn_list']);
-        $exist_isbn_list = Auth::user()->comics()->whereIn('isbn', $isbn_list)
+        $exist_isbn_list = $user->comics()->whereIn('isbn', $isbn_list)
             ->whereHas('shop', function ($query) use ($shop_id) {
                 $query->where([['id_in_platform', $shop_id]]);
             })->pluck('isbn')->toArray();
@@ -50,12 +44,7 @@ class ExtComicController extends Controller
     }
     public function create(Request $request):JsonResponse
     {
-        if(!Auth::id()) {
-            return response()->json([
-                'result' => 'error',
-                'message' => 'unauthorized'
-            ], 401);
-        }
+        $userId = $request->user()->id;
         try {
             $data = $request->validate(
                 [
@@ -69,7 +58,7 @@ class ExtComicController extends Controller
 
             $shop = Shop::firstOrCreate(
                 [
-                    'user_id' => Auth::id(),
+                    'user_id' => $userId,
                     'platform_id' => 1, // TODO:決め打ち
                     'id_in_platform' => $data['shopId']
                 ],
@@ -80,7 +69,7 @@ class ExtComicController extends Controller
 
             Comic::firstOrCreate(
                 [
-                    'user_id' => Auth::id(),
+                    'user_id' => $userId,
                     'id_in_platform' => $data['isbn'],
                     'shop_id' => $shop->id,
                 ],
